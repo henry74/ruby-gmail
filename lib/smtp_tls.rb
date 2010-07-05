@@ -12,7 +12,7 @@ Net::SMTP.class_eval do
 
   def start( helo = 'localhost.localdomain',
              user = nil, secret = nil, authtype = nil ) # :yield: smtp
-    start_method = starttls_auto? ? :do_tls_start : :do_start
+    start_method = :starttls_auto? ? :do_tls_start : :do_start
     if block_given?
       begin
         send(start_method, helo, user, secret, authtype)
@@ -30,7 +30,7 @@ Net::SMTP.class_eval do
   
   def do_tls_start(helodomain, user, secret, authtype)
     raise IOError, 'SMTP session already started' if @started
-    if RUBY_VERSION == '1.8.6'
+    if RUBY_VERSION == '1.8.6' || RUBY_VERSION == '1.8.7'
       check_auth_args(user, secret, authtype) if user or secret
     else
       check_auth_args(user, secret) if user or secret
